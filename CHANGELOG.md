@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.3.1
+
+- Use the broadly supported Lovelace `call-service` action for barrier buttons.
+- Migrate the generated v0.3.0 dashboard action without overwriting other cards.
+
 ## 0.3.0
 
 - Generate real camera preview JPEGs through Home Assistant's bundled ffmpeg.

@@ -28,9 +28,9 @@ def _dashboard_config(camera_ids: list[str], button_ids: list[str]) -> dict:
                         "icon": "mdi:gate-open",
                         "show_state": False,
                         "tap_action": {
-                            "action": "perform-action",
-                            "perform_action": "button.press",
-                            "target": {"entity_id": entity_id},
+                            "action": "call-service",
+                            "service": "button.press",
+                            "service_data": {"entity_id": entity_id},
                             "confirmation": {"text": "Открыть этот шлагбаум?"},
                         },
                         "hold_action": {"action": "none"},
@@ -92,6 +92,31 @@ async def async_ensure_dashboard(hass: HomeAssistant, entry: ConfigEntry) -> Non
             # never overwrite a dashboard the user has edited.
             if current == _dashboard_config(camera_ids, []):
                 await config.async_save(_dashboard_config(camera_ids, button_ids))
+            else:
+                # v0.3.0 used the newer perform-action spelling, which is not
+                # executed by some HA frontend releases. Migrate only those
+                # generated button actions and preserve every other card.
+                changed = False
+                for stack in current.get("views", [{}])[0].get("cards", []):
+                    if stack.get("type") != "horizontal-stack":
+                        continue
+                    for card in stack.get("cards", []):
+                        action = card.get("tap_action", {})
+                        entity_id = card.get("entity")
+                        if (
+                            action.get("action") == "perform-action"
+                            and action.get("perform_action") == "button.press"
+                            and isinstance(entity_id, str)
+                        ):
+                            card["tap_action"] = {
+                                "action": "call-service",
+                                "service": "button.press",
+                                "service_data": {"entity_id": entity_id},
+                                "confirmation": {"text": "Открыть этот шлагбаум?"},
+                            }
+                            changed = True
+                if changed:
+                    await config.async_save(current)
         return
 
     item = await collection.async_create_item(
