@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.4
+
+- Added one-time automatic bridge pairing; integration can obtain its token without manual entry.
+
 ## 0.1.3
 
 - Fixed empty bridge runtime options so initial add-on configuration can be saved.

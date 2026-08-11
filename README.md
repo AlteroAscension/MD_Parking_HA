@@ -27,8 +27,9 @@ The integration connects only to the bridge. Provider credentials and temporary
 stream sources must never be entered in Home Assistant YAML.
 
 When adding the integration, use `http://<HA-LAN-IP>:8099` as the bridge URL
-(for example, `http://192.168.1.50:8099`) and the same `api_token` configured
-in the add-on. Keep this port reachable only from the local network.
+(for example, `http://192.168.1.50:8099`). To pair without entering a token,
+temporarily enable `pairing_enabled` in the add-on and leave the integration
+token field empty. Pairing closes after the first successful connection.
 
 ## Updates
 
