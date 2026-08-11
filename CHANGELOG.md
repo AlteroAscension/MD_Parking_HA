@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.3.0
+
+- Generate real camera preview JPEGs through Home Assistant's bundled ffmpeg.
+- Add isolated barrier buttons backed by the confirmed access operation.
+- Require frontend and bridge confirmation, provide a configurable kill switch,
+  enforce per-barrier cooldown, and keep a secret-safe in-memory audit trail.
+- Add the barrier buttons to the generated MD Parking dashboard.
+
 ## 0.2.9
 
 - Initialize Home Assistant's Camera base explicitly when combined with a

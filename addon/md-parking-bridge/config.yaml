@@ -1,7 +1,7 @@
 name: MD Parking Bridge
-version: 0.2.9
+version: 0.3.0
 slug: md_parking_bridge
-description: Read-only MD Parking source renewal and local go2rtc restream
+description: MD Parking cameras and explicitly controlled barrier access
 url: https://github.com/AlteroAscension/MD_Parking_HA
 startup: services
 boot: auto
@@ -17,6 +17,8 @@ ports_description:
 options:
   api_token: ""
   pairing_enabled: false
+  control_enabled: false
+  control_cooldown_seconds: 15
   provider_username: ""
   provider_password: ""
   auth_url: "https://auth.mdparking.ru/v2/"
@@ -31,6 +33,8 @@ options:
 schema:
   api_token: password
   pairing_enabled: bool
+  control_enabled: bool
+  control_cooldown_seconds: int(10,300)
   provider_username: str?
   provider_password: password?
   auth_url: url

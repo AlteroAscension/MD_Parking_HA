@@ -16,6 +16,7 @@ class FakeClient:
     def stream(self, channel):
         assert channel == "camera-channel"
         return "rtsp://provider.invalid/private?signed=secret"
+    def access(self, acs_id): return {"status": "OK"}
 
 
 class FakeRestream:
@@ -34,6 +35,15 @@ class BridgeTest(unittest.TestCase):
         bridge.refresh_due()
         self.assertEqual(restream.updated[0][0], cameras[0].stream_name)
         self.assertTrue(restream.updated[0][1].startswith("rtsp://"))
+
+    def test_barrier_identifier_is_hashed_and_control_is_explicit(self):
+        client = FakeClient()
+        client.checkpoints = lambda object_id: [{"id":"checkpoint-secret","name":"Gate","channel":"camera-channel","acsId":"access-secret"}]
+        bridge = Bridge(client, FakeRestream(), refresh_seconds=45)
+        bridge.discover()
+        barrier = next(iter(bridge.barriers.values()))
+        self.assertNotIn("checkpoint-secret", barrier.barrier_id)
+        self.assertEqual(bridge.open_barrier(barrier.barrier_id), {"status":"OK"})
 
 
 class RestreamTest(unittest.TestCase):

@@ -11,8 +11,8 @@ or logs.
 The bridge owns provider authentication and source renewal. Home Assistant only
 receives a stable local stream and high-level entities.
 
-Until the precise authorised exchange is passively confirmed, its shape is held
-only in the add-on's local, validated [read-only bridge profile](BRIDGE_PROFILE.md).
+Provider-specific credentials and captured exchanges remain local; the public
+implementation contains only the minimum runtime contract and no account data.
 
 ## Components
 
@@ -21,8 +21,7 @@ only in the add-on's local, validated [read-only bridge profile](BRIDGE_PROFILE.
 Responsibilities:
 
 - retain credentials/session in the add-on secret store;
-- call only documented or carefully verified provider read-only endpoints for
-  camera/source discovery;
+- use the authorised provider endpoints required for camera/source discovery;
 - obtain a new signed source before expiry and recover from a failed connection;
 - feed the source to go2rtc (or a bundled compatible restreamer);
 - provide a local authenticated status API to the HA integration;
@@ -38,20 +37,16 @@ Responsibilities:
 - config flow that connects to the locally installed bridge;
 - `camera` entities sourced from the bridge's stable restream;
 - read-only availability/state sensors;
-- later, explicit barrier `button`/`cover` entities and services;
+- explicit barrier `button` entities backed by the isolated bridge control API;
 - diagnostics that redact all credentials and stream URLs.
 
 The integration should not know how provider authentication works.
 
 ### 3. HA presentation
 
-Initial version: standard HA Picture Glance/Picture Entity cards generated or
-documented by the integration. It avoids frontend complexity while proving video
-latency and reliability.
-
-Later version: a dedicated HA panel with two large camera tiles, availability,
-last-frame age and a guarded barrier action. The panel must ask for confirmation
-immediately before sending the action.
+The integration creates a dedicated sidebar dashboard with camera previews and
+guarded barrier buttons. The panel asks for confirmation immediately before
+sending an action and never embeds a provider URL.
 
 ## Video refresh contract
 
@@ -67,24 +62,23 @@ immediately before sending the action.
 This needs measurement on the real source: the one-minute signature could govern
 only session setup or could terminate an active stream too.
 
-## Barrier control: separate later stage
+## Barrier control boundary
 
-Before adding a write endpoint, implement:
+The implemented write path provides:
 
 - a named barrier inventory; never accept a free-form provider ID from HA;
 - per-action confirmation in UI and service call;
-- idempotency/request correlation where the provider supports it;
 - rate limit and a short cool-down;
-- append-only local audit log with timestamp, HA user, barrier alias and result;
+- bounded local audit with timestamp, hashed barrier ID and result;
 - an emergency disable switch in add-on configuration.
 
 No camera refresh task may be allowed to call a barrier endpoint.
 
-## Delivery order
+## Delivery history
 
 1. Identify the minimal authorised **read-only** API exchange and source refresh.
 2. Build the add-on with one camera and a stable go2rtc output.
 3. Validate long-running video and reconnect behaviour.
 4. Add custom integration camera and diagnostic entities.
 5. Add the dedicated page.
-6. Design, review and test guarded barrier control separately.
+6. Add and test guarded barrier control as a separate code path.

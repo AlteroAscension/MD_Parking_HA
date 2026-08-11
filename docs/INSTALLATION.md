@@ -38,6 +38,10 @@ Complete the guided forms for phone number, object number, and SMS code. On
 success, Home Assistant creates one camera entity for every camera available to
 the account. Return to the add-on options and disable `pairing_enabled`.
 
+Enable `control_enabled` only when barrier buttons are required. Every press is
+confirmed in the dashboard, checked again by the bridge, rate-limited, and
+recorded in the bridge's secret-safe audit. Camera refresh never calls control.
+
 ## 4. Add cameras to a dashboard
 
 Add a **Picture Entity** or **Picture Glance** card and select the generated

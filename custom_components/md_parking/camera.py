@@ -4,11 +4,13 @@ from __future__ import annotations
 from urllib.parse import urlsplit
 
 from homeassistant.components.camera import Camera
+from homeassistant.components.ffmpeg import DATA_FFMPEG
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.device_registry import DeviceInfo
 from homeassistant.helpers.entity_platform import AddEntitiesCallback
 from homeassistant.helpers.update_coordinator import CoordinatorEntity
+from haffmpeg.tools import ImageFrame
 
 from .const import CONF_BRIDGE_URL, DOMAIN
 from .coordinator import MdParkingCoordinator
@@ -68,3 +70,14 @@ class MdParkingCamera(CoordinatorEntity[MdParkingCoordinator], Camera):
 
     async def stream_source(self) -> str:
         return self._stream_source
+
+    async def async_camera_image(
+        self, width: int | None = None, height: int | None = None
+    ) -> bytes | None:
+        """Capture a still preview from the stable local RTSP stream."""
+        image = ImageFrame(self.hass.data[DATA_FFMPEG].binary)
+        return await image.get_image(
+            self._stream_source,
+            extra_cmd="-rtsp_transport tcp",
+            timeout=15,
+        )

@@ -12,12 +12,12 @@ entities.
 - automatic discovery of cameras available to the account;
 - automatic provider-session and video-source renewal;
 - stable local H.264 streams through bundled go2rtc;
-- Home Assistant camera entities and secret-safe diagnostics;
+- Home Assistant camera and barrier-button entities with secret-safe diagnostics;
 - installation and updates from this Git repository.
 
-Barrier control is intentionally not included in the current camera release.
-It will be a separate, explicitly enabled feature with audit and rate limiting;
-camera refresh will never invoke a barrier action.
+Barrier control is implemented as a separate, explicitly enabled path with UI
+confirmation, a server-side kill switch, per-barrier rate limiting, and audit.
+Camera and session refresh code never invokes a barrier action.
 
 ## Installation
 
@@ -33,6 +33,10 @@ camera refresh will never invoke a barrier action.
 6. Use `http://<HOME_ASSISTANT_IP>:8099` as the bridge URL, leave the token blank,
    and complete the phone, object-number, and SMS steps.
 7. Disable `pairing_enabled` after setup.
+
+To enable opening controls, enable `control_enabled` in the add-on options. The
+generated dashboard shows one confirmed-action button for every available
+barrier. `control_cooldown_seconds` limits repeated requests.
 
 The cameras then appear as normal `camera` entities and can be added to a
 Picture Entity or Picture Glance dashboard card. Keep ports 8099 and 8554 on

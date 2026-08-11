@@ -21,7 +21,9 @@ API or diagnostics.
 Ports 8099 and 8554 must remain on the trusted local network. Do not forward
 them from the router or publish them through a reverse proxy.
 
-This release exposes cameras only. Barrier control is intentionally isolated
-from camera source renewal and is not included yet. See the
+Barrier control is isolated from camera source renewal. It remains disabled
+until `control_enabled` is set, requires an explicit confirmed request, applies
+`control_cooldown_seconds`, and records only hashed identifiers in its audit.
+See the
 [installation guide](../../docs/INSTALLATION.md) and
 [security policy](../../docs/SECURITY.md).

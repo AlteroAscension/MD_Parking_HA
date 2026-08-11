@@ -11,7 +11,7 @@ store, never in Git, issue text, screenshots, release assets or diagnostics:
 - APK files, PCAP/HAR captures and screenshots with camera content;
 - apartment/address, phone number and raw provider object IDs.
 
-Any logs emitted by the future bridge must redact query strings and HTTP
+Bridge logs must redact query strings and HTTP
 `Authorization`/cookie headers.
 
 ## Functional boundary
@@ -21,9 +21,11 @@ Video and barrier control are different trust domains.
 - Video source acquisition is read-only and may run automatically.
 - Opening a barrier is a physical action and must never be triggered by a video
   refresh, an availability retry, an automation, or a free-form URL parameter.
-- The future UI uses a confirmation step and names the target barrier.
-- The add-on has a global control-disable switch, enabled by default until the
-  user explicitly turns it on.
+- The generated UI uses a confirmation step and names the target barrier.
+- The add-on has a global `control_enabled` kill switch. Control is disabled by
+  default until the user explicitly turns it on.
+- The bridge accepts only discovered, hashed barrier IDs, enforces a per-target
+  cooldown, and keeps a secret-safe audit of attempts and results.
 
 ## Network boundary
 

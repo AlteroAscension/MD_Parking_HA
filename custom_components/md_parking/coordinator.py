@@ -39,6 +39,12 @@ class MdParkingCoordinator(DataUpdateCoordinator[dict]):
                 if response.status != 200:
                     raise UpdateFailed(f"bridge cameras HTTP {response.status}")
                 cameras = (await response.json()).get("cameras", [])
+            async with session.get(
+                self._base_url + "/v1/barriers", headers=self._headers, timeout=10
+            ) as response:
+                if response.status != 200:
+                    raise UpdateFailed(f"bridge barriers HTTP {response.status}")
+                barrier_payload = await response.json()
         except UpdateFailed:
             raise
         except Exception as exc:
@@ -48,4 +54,9 @@ class MdParkingCoordinator(DataUpdateCoordinator[dict]):
             raise UpdateFailed("MD Parking Bridge is not authenticated")
         if not isinstance(cameras, list) or not cameras:
             raise UpdateFailed("MD Parking Bridge returned no cameras")
-        return {"diagnostics": diagnostics, "cameras": cameras}
+        return {
+            "diagnostics": diagnostics,
+            "cameras": cameras,
+            "barriers": barrier_payload.get("barriers", []),
+            "control_enabled": barrier_payload.get("control_enabled", False),
+        }
