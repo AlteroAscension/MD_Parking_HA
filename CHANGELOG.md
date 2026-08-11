@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.2.8
+
+- Retry config-entry setup instead of orphaning camera entities when the bridge
+  is temporarily unavailable during Home Assistant startup.
+- Add coordinator-backed camera availability and group cameras under one
+  MD Parking device.
+- Create a sidebar MD Parking dashboard with live camera cards on first setup.
+
 ## 0.2.7
 
 - Replace obsolete foundation notes with the current Git/HACS installation,
