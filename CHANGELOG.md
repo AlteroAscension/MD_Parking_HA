@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.7
+
+- Added safe health endpoint and pairing diagnostics.
+
 ## 0.1.6
 
 - Fixed add-on Python package path during container startup.
