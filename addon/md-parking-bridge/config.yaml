@@ -16,6 +16,12 @@ options:
   api_token: null
   provider_username: null
   provider_password: null
+  auth_url: "https://auth.mdparking.ru/v2/base"
+  app: ""
+  client_id: ""
+  fingerprint: ""
+  provider_object_id: null
+  provider_sms_code: null
   refresh_before_expiry_seconds: 15
   refresh_retry_seconds: 10
   camera_aliases: []
@@ -23,6 +29,12 @@ schema:
   api_token: password
   provider_username: str?
   provider_password: password?
+  auth_url: url
+  app: str?
+  client_id: str?
+  fingerprint: str?
+  provider_object_id: password?
+  provider_sms_code: password?
   refresh_before_expiry_seconds: int(5,55)
   refresh_retry_seconds: int(5,300)
   camera_aliases:
