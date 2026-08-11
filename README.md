@@ -42,6 +42,7 @@ Details: [architecture](docs/ARCHITECTURE.md), [provider research](docs/RESEARCH
 [shared emulator](docs/EMULATOR.md), [X50 relationship](docs/X50_CONTEXT.md).
 The local read-only provider-profile boundary is documented in
 [bridge profile contract](docs/BRIDGE_PROFILE.md).
+Installation paths: [INSTALLATION.md](docs/INSTALLATION.md).
 
 ## Repository layout
 
