@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.3
+
+- Fixed empty bridge runtime options so initial add-on configuration can be saved.
+
 ## 0.1.2
 
 - Published the authenticated bridge API on port 8099 for the HA integration.
