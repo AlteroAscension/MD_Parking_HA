@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.3
+
+- Added secret-safe provider error codes for HTTP, network, timeout, JSON, and RPC failures.
+
 ## 0.2.2
 
 - Ignore the obsolete persisted `/v2/base` auth URL from pre-0.2 add-on options.
