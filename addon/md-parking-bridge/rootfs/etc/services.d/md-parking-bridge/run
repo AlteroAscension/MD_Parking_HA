@@ -1,0 +1,5 @@
+#!/usr/bin/with-contenv bashio
+set -euo pipefail
+
+export API_TOKEN="$(bashio::config 'api_token')"
+exec python3 -m md_parking_bridge.main

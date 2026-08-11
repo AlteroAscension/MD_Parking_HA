@@ -11,6 +11,9 @@ or logs.
 The bridge owns provider authentication and source renewal. Home Assistant only
 receives a stable local stream and high-level entities.
 
+Until the precise authorised exchange is passively confirmed, its shape is held
+only in the add-on's local, validated [read-only bridge profile](BRIDGE_PROFILE.md).
+
 ## Components
 
 ### 1. `md-parking-bridge` HA add-on

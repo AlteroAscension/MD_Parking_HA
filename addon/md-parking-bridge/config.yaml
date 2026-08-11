@@ -1,0 +1,29 @@
+name: MD Parking Bridge
+version: 0.1.0
+slug: md_parking_bridge
+description: Read-only MD Parking source renewal and local go2rtc restream
+url: https://github.com/AlteroAscension/MD_Parking_HA
+startup: services
+boot: auto
+init: false
+arch:
+  - amd64
+ports:
+  8099/tcp: null
+ports_description:
+  8099/tcp: Bridge status API (keep internal to Home Assistant)
+options:
+  api_token: null
+  provider_username: null
+  provider_password: null
+  refresh_before_expiry_seconds: 15
+  refresh_retry_seconds: 10
+  camera_aliases: []
+schema:
+  api_token: password
+  provider_username: str?
+  provider_password: password?
+  refresh_before_expiry_seconds: int(5,55)
+  refresh_retry_seconds: int(5,300)
+  camera_aliases:
+    - str

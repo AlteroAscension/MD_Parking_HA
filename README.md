@@ -40,6 +40,8 @@ MD Parking HA custom integration
 
 Details: [architecture](docs/ARCHITECTURE.md), [provider research](docs/RESEARCH.md),
 [shared emulator](docs/EMULATOR.md), [X50 relationship](docs/X50_CONTEXT.md).
+The local read-only provider-profile boundary is documented in
+[bridge profile contract](docs/BRIDGE_PROFILE.md).
 
 ## Repository layout
 
