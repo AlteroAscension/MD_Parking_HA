@@ -1,0 +1,22 @@
+# Local artefacts that may contain personal data, temporary signed URLs or app credentials.
+.local/
+
+# Android packages and reverse-engineering artefacts are never source material here.
+*.apk
+*.apks
+*.xapk
+*.zip
+*.pcap
+*.har
+
+# Python / Node / editor output.
+__pycache__/
+*.py[cod]
+.venv/
+node_modules/
+.vscode/settings.json
+
+# Explicitly keep all secrets out of the repository.
+.env
+.env.*
+secrets.yaml
