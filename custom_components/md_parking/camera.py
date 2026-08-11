@@ -39,7 +39,11 @@ class MdParkingCamera(CoordinatorEntity[MdParkingCoordinator], Camera):
         camera: dict,
         host: str,
     ) -> None:
-        super().__init__(coordinator)
+        # CoordinatorEntity does not continue cooperative initialization into
+        # Camera on all supported HA releases. Camera.__init__ prepares the
+        # WebRTC provider fields used while the entity is added to HA.
+        Camera.__init__(self)
+        CoordinatorEntity.__init__(self, coordinator)
         self._camera_id = camera["id"]
         self._attr_name = camera["name"]
         self._attr_unique_id = camera["id"]

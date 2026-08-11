@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.9
+
+- Initialize Home Assistant's Camera base explicitly when combined with a
+  coordinator entity, fixing unavailable cameras on current HA releases.
+
 ## 0.2.8
 
 - Retry config-entry setup instead of orphaning camera entities when the bridge
