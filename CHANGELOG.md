@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.4
+
+- Treat the provider's `object required` response as the expected transition
+  from phone entry to object-number entry.
+- Match the official client's compact JSON encoding and public request headers.
+
 ## 0.2.3
 
 - Added secret-safe provider error codes for HTTP, network, timeout, JSON, and RPC failures.

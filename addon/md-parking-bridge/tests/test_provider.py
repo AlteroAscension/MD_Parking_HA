@@ -7,7 +7,7 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).parents[1] / "rootfs/usr/lib/python3.13/site-packages"))
 
-from md_parking_bridge.provider import Client
+from md_parking_bridge.provider import Client, ProviderError
 
 
 class Response:
@@ -18,6 +18,25 @@ class Response:
 
 
 class ProviderTest(unittest.TestCase):
+    @patch("urllib.request.urlopen")
+    def test_object_required_is_normal_first_stage(self, urlopen):
+        urlopen.return_value = Response({"error": {"code": -32099, "message": "object required"}})
+        client = Client("https://auth.invalid/", {}, "mdparking", "")
+        self.assertEqual(client.request_code("70000000000"), {"objectRequired": True})
+        request = urlopen.call_args.args[0]
+        self.assertEqual(list(json.loads(request.data)), ["params", "method", "jsonrpc", "id"])
+        self.assertNotIn(b" ", request.data)
+        self.assertEqual(request.headers["App-platform"], "android")
+        self.assertEqual(request.headers["Accept"], "application/json, text/plain, */*")
+
+    @patch("urllib.request.urlopen")
+    def test_object_required_after_object_id_remains_error(self, urlopen):
+        urlopen.return_value = Response({"error": {"code": -32099, "message": "object required"}})
+        client = Client("https://auth.invalid/", {}, "mdparking", "")
+        with self.assertRaises(ProviderError) as caught:
+            client.request_code("70000000000", "0000")
+        self.assertEqual(caught.exception.safe_code, "object_required")
+
     @patch("urllib.request.urlopen")
     def test_authorize_persist_reload_and_inventory(self, urlopen):
         urlopen.side_effect = [
