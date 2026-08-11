@@ -20,3 +20,10 @@ The config flow accepts only the bridge URL and its API token.
 Do not configure a provider RTSP URL, provider credentials, camera ID, or
 barrier ID in Home Assistant. See [SECURITY.md](SECURITY.md) and
 [BRIDGE_PROFILE.md](BRIDGE_PROFILE.md).
+
+## Updating
+
+Use the Add-on Store update action for the bridge and HACS/manual replacement
+for the custom integration. Restart the add-on after every bridge update, then
+reload the integration. Check the installed release against
+[CHANGELOG.md](../CHANGELOG.md).
