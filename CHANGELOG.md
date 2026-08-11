@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.2.6
+
+- Send the current Bearer access token with provider session refresh requests.
+- Refresh provider sessions in the background before access-token expiry.
+- Retry camera source rotation independently and recover diagnostics after a
+  successful cycle.
+
 ## 0.2.5
 
 - Support the confirmed nested `stream.hiRes`/`stream.lowRes` provider response.

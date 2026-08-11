@@ -41,3 +41,24 @@ class RestreamTest(unittest.TestCase):
         first = Go2Rtc.stable_name("raw-provider-id")
         self.assertEqual(first, Go2Rtc.stable_name("raw-provider-id"))
         self.assertNotIn("raw-provider-id", first)
+
+
+class PartiallyFailingClient(FakeClient):
+    def checkpoints(self, object_id):
+        return [
+            {"id": "bad", "name": "Bad", "channel": "bad-channel"},
+            {"id": "good", "name": "Good", "channel": "good-channel"},
+        ]
+    def stream(self, channel):
+        if channel == "bad-channel": raise RuntimeError("temporary failure")
+        return "rtsp://provider.invalid/good"
+
+
+class RefreshIsolationTest(unittest.TestCase):
+    def test_failure_of_one_camera_does_not_block_other_camera(self):
+        restream = FakeRestream()
+        bridge = Bridge(PartiallyFailingClient(), restream, refresh_seconds=45)
+        bridge.discover()
+        with self.assertRaises(RuntimeError): bridge.refresh_due()
+        self.assertEqual(len(restream.updated), 1)
+        self.assertEqual(restream.updated[0][0], Go2Rtc.stable_name("good"))

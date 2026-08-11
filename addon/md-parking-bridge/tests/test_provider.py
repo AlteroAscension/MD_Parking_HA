@@ -67,3 +67,13 @@ class ProviderTest(unittest.TestCase):
         self.assertEqual(client.inventory(), [{"id": "one"}])
         inventory_body = json.loads(urlopen.call_args_list[1].args[0].data)
         self.assertEqual(inventory_body["params"], {"id": "all"})
+
+    @patch("urllib.request.urlopen")
+    def test_refresh_sends_current_access_token_as_bearer(self, urlopen):
+        urlopen.return_value = Response({"result": {"accessToken": "new-access", "refreshToken": "new-refresh", "appServer": "https://api.invalid/"}})
+        client = Client("https://auth.invalid/", {"os": "android", "ver": "2.0.6"}, "mdparking", "")
+        client.session = Session("current-access", "current-refresh", "https://api.invalid/")
+        session = client.refresh_session()
+        request = urlopen.call_args.args[0]
+        self.assertEqual(request.headers["Authorization"], "Bearer current-access")
+        self.assertEqual(session.access_token, "new-access")
