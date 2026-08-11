@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.6
+
+- Fixed add-on Python package path during container startup.
+
 ## 0.1.5
 
 - Fixed empty auto-pairing token configuration in Home Assistant Supervisor.

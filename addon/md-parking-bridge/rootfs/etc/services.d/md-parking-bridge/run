@@ -2,5 +2,6 @@
 set -euo pipefail
 
 export API_TOKEN="$(bashio::config 'api_token')"
+export PYTHONPATH="/usr/lib/python3.13/site-packages${PYTHONPATH:+:$PYTHONPATH}"
 go2rtc >/tmp/go2rtc.log 2>&1 &
 exec python3 -m md_parking_bridge.main
