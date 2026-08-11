@@ -26,6 +26,10 @@ Barrier control is intentionally not included in this release.
 The integration connects only to the bridge. Provider credentials and temporary
 stream sources must never be entered in Home Assistant YAML.
 
+When adding the integration, use `http://<HA-LAN-IP>:8099` as the bridge URL
+(for example, `http://192.168.1.50:8099`) and the same `api_token` configured
+in the add-on. Keep this port reachable only from the local network.
+
 ## Updates
 
 The add-on version is declared in `addon/md-parking-bridge/config.yaml` and the
