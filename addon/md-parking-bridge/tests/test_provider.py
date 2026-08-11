@@ -7,7 +7,7 @@ from unittest.mock import patch
 
 sys.path.insert(0, str(Path(__file__).parents[1] / "rootfs/usr/lib/python3.13/site-packages"))
 
-from md_parking_bridge.provider import Client, ProviderError
+from md_parking_bridge.provider import Client, ProviderError, Session
 
 
 class Response:
@@ -36,6 +36,20 @@ class ProviderTest(unittest.TestCase):
         with self.assertRaises(ProviderError) as caught:
             client.request_code("70000000000", "0000")
         self.assertEqual(caught.exception.safe_code, "object_required")
+
+    @patch("urllib.request.urlopen")
+    def test_stream_prefers_nested_high_resolution_source(self, urlopen):
+        urlopen.return_value = Response({"result": {"stream": {"hiRes": "rtsp://high", "lowRes": "rtsp://low"}}})
+        client = Client("https://auth.invalid/", {}, "mdparking", "")
+        client.session = Session("access", "refresh", "https://api.invalid/")
+        self.assertEqual(client.stream("channel"), "rtsp://high")
+
+    @patch("urllib.request.urlopen")
+    def test_stream_uses_nested_low_resolution_fallback(self, urlopen):
+        urlopen.return_value = Response({"result": {"stream": {"hiRes": "", "lowRes": "rtsp://low"}}})
+        client = Client("https://auth.invalid/", {}, "mdparking", "")
+        client.session = Session("access", "refresh", "https://api.invalid/")
+        self.assertEqual(client.stream("channel"), "rtsp://low")
 
     @patch("urllib.request.urlopen")
     def test_authorize_persist_reload_and_inventory(self, urlopen):

@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.5
+
+- Support the confirmed nested `stream.hiRes`/`stream.lowRes` provider response.
+- Continue with a still-valid access token when an immediate refresh is rejected.
+- Refresh one-minute stream capabilities 15 seconds before expiry.
+
 ## 0.2.4
 
 - Treat the provider's `object required` response as the expected transition
