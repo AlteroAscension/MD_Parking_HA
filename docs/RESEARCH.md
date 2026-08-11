@@ -54,6 +54,19 @@ Still to determine safely:
 - whether the same API authorisation is also accepted for a read-only service
 outside the Android app.
 
+## Authorised API capture update
+
+Passive inspection of the already authenticated client confirmed a JSON-RPC
+inventory flow over the protected API endpoint. The application calls
+read-only operations to enumerate account objects, enumerate checkpoints for
+an object, read tickets, and retrieve an access-status value for a checkpoint.
+Checkpoint records contain a display name, an internal object association,
+access-system association, camera channel, and a snapshot reference.
+
+The capture deliberately did not send any barrier action. The operation name,
+request/response bodies, session material, internal IDs, snapshot paths, and
+temporary media URLs are local-only data under `.local/`.
+
 ## Security conclusion
 
 The provider is not exposing a permanent anonymous camera. It uses an

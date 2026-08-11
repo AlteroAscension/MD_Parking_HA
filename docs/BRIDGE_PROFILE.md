@@ -48,3 +48,9 @@ rule. The next increment is permitted only after that observation and must add:
 That increment implements the [video refresh contract](ARCHITECTURE.md#video-refresh-contract).
 It remains separate from every barrier-control design in
 [ARCHITECTURE.md](ARCHITECTURE.md#barrier-control-separate-later-stage).
+
+The passive capture now confirms the read-only inventory operations, but not
+the authentication exchange. The bridge implementation may use those confirmed
+operations only after it acquires a session through an equally confirmed login
+or refresh flow; it must not copy a captured application session into Git or
+diagnostics.
