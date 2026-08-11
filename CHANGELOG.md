@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.8
+
+- Distinguish unavailable pairing from bridge connectivity failures in config flow.
+
 ## 0.1.7
 
 - Added safe health endpoint and pairing diagnostics.

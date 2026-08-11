@@ -21,9 +21,11 @@ class ConfigFlow(config_entries.ConfigFlow, domain=DOMAIN):
                 try:
                     session=async_get_clientsession(self.hass)
                     async with session.post(user_input[CONF_BRIDGE_URL].rstrip('/')+'/v1/pair',timeout=10) as response:
+                        if response.status != 200:
+                            return self.async_show_form(step_id='user',data_schema=self._schema(),errors={'base':'pairing_unavailable'})
                         user_input[CONF_API_TOKEN]=(await response.json())['api_token']
                 except Exception:
-                    return self.async_show_form(step_id='user',data_schema=self._schema(),errors={'base':'cannot_connect'})
+                    return self.async_show_form(step_id='user',data_schema=self._schema(),errors={'base':'bridge_unreachable'})
             await self.async_set_unique_id(user_input[CONF_BRIDGE_URL])
             self._abort_if_unique_id_configured()
             return self.async_create_entry(title="MD Parking Bridge", data=user_input)
