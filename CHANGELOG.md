@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.7
+
+- Replace obsolete foundation notes with the current Git/HACS installation,
+  automatic pairing, SMS sign-in, camera, update, and dashboard instructions.
+
 ## 0.2.6
 
 - Send the current Bearer access token with provider session refresh requests.

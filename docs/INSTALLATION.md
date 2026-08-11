@@ -1,40 +1,56 @@
 # Installation from Git
 
-## Add-on repository
+## 1. Install the add-on
 
-In Home Assistant, open **Settings → Add-ons → Add-on store → ⋮ → Repositories**
-and add this repository's Git URL. The store discovers
-`addon/md-parking-bridge` through the root [`repository.yaml`](../repository.yaml).
+In Home Assistant open **Settings > Add-ons > Add-on store > Repositories** and
+add:
 
-Install **MD Parking Bridge**, configure a long random `api_token`, and keep the
-port reachable only on the HA local network. Provider credentials and the verified local
-profile belong to the add-on data volume, never Git or the custom integration.
+```text
+https://github.com/AlteroAscension/MD_Parking_HA
+```
 
-## Custom integration
+Install **MD Parking Bridge**. Enable `pairing_enabled`, start the add-on, and
+confirm that its log says the local API is listening on port 8099. You do not
+need to enter an API token, username, password, object number, or SMS code in
+the add-on options.
 
-Until this repository is packaged for HACS, copy `custom_components/md_parking`
-to Home Assistant's `config/custom_components/md_parking`, restart Home
-Assistant, and add **MD Parking** through **Settings → Devices & services**.
-The config flow accepts only the bridge URL and its API token.
+## 2. Install the custom integration
 
-Use `http://<HA-LAN-IP>:8099` as bridge URL and exactly the same `api_token`
-that was configured in the add-on. Do not expose port 8099 through router port
-forwarding or a public reverse proxy.
+In HACS add the repository URL above as a custom repository with category
+**Integration**, then install **MD Parking** and restart Home Assistant.
 
-For automatic pairing, enable `pairing_enabled` in the add-on and leave the
-integration token empty. The integration then asks for the MD Parking phone,
-object number, and SMS code. For an integration entry created before version
-0.2.0, open **Settings → Devices & services → MD Parking → Configure** to run
-the same provider login flow. The phone, object number, and SMS code are not
-stored in the Home Assistant config entry.
+For a manual installation, copy `custom_components/md_parking` from this
+repository to `/config/custom_components/md_parking`, then restart Home
+Assistant.
 
-Do not configure a provider RTSP URL, provider credentials, camera ID, or
-barrier ID in Home Assistant. See [SECURITY.md](SECURITY.md) and
-[BRIDGE_PROFILE.md](BRIDGE_PROFILE.md).
+## 3. Pair and sign in
+
+Open **Settings > Devices & services > Add integration > MD Parking**.
+
+- Bridge URL: `http://<HOME_ASSISTANT_LAN_IP>:8099`
+- API token: leave blank during automatic pairing
+
+Use the Home Assistant machine's LAN address, not `localhost`: the integration
+runs in the Core container while the bridge runs in a separate add-on
+container.
+
+Complete the guided forms for phone number, object number, and SMS code. On
+success, Home Assistant creates one camera entity for every camera available to
+the account. Return to the add-on options and disable `pairing_enabled`.
+
+## 4. Add cameras to a dashboard
+
+Add a **Picture Entity** or **Picture Glance** card and select the generated
+`camera` entity. The integration points Home Assistant at port 8554 using a
+stable stream name; temporary provider URLs are never placed in dashboard
+configuration.
 
 ## Updating
 
-Use the Add-on Store update action for the bridge and HACS/manual replacement
-for the custom integration. Restart the add-on after every bridge update, then
-reload the integration. Check the installed release against
-[CHANGELOG.md](../CHANGELOG.md).
+Use the Add-on Store update action for the bridge and HACS for the integration.
+After a manual integration update, restart Home Assistant. Compare installed
+versions with [CHANGELOG.md](../CHANGELOG.md).
+
+Do not expose ports 8099 or 8554 through router forwarding or a public reverse
+proxy. Do not put provider tokens, stream URLs, account identifiers, or SMS
+codes in YAML or Git. See [SECURITY.md](SECURITY.md).

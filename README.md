@@ -1,49 +1,49 @@
 # MD Parking for Home Assistant
 
-Private Home Assistant integration for MD Parking cameras. The project provides
-a local bridge add-on that maintains temporary camera sources and exposes stable
-local streams to Home Assistant.
+MD Parking cameras in Home Assistant through a local add-on and custom
+integration. The add-on performs account authentication, keeps the provider
+session alive, renews short-lived camera sources, and restreams them under
+stable local addresses. The integration creates native Home Assistant camera
+entities.
 
 ## Features
 
-- authorised camera discovery;
-- automatic renewal of temporary stream sources;
-- stable local go2rtc stream names;
-- Home Assistant camera entities discovered from the bridge;
-- local authenticated diagnostics without credentials or source URLs.
+- guided phone, object-number, and SMS authentication;
+- automatic discovery of cameras available to the account;
+- automatic provider-session and video-source renewal;
+- stable local H.264 streams through bundled go2rtc;
+- Home Assistant camera entities and secret-safe diagnostics;
+- installation and updates from this Git repository.
 
-Barrier control is intentionally not included in this release.
+Barrier control is intentionally not included in the current camera release.
+It will be a separate, explicitly enabled feature with audit and rate limiting;
+camera refresh will never invoke a barrier action.
 
-## Install
+## Installation
 
-1. In Home Assistant open **Settings → Add-ons → Add-on store → ⋮ → Repositories**.
+1. In Home Assistant open **Settings > Add-ons > Add-on store > Repositories**.
 2. Add `https://github.com/AlteroAscension/MD_Parking_HA`.
-3. Install **MD Parking Bridge**, configure its runtime options and start it.
-4. Install `custom_components/md_parking` with HACS as a custom repository, or
-   copy it to `config/custom_components/md_parking`.
-5. Restart Home Assistant and add **MD Parking** under **Settings → Devices & services**.
+3. Install and start **MD Parking Bridge**. Enable `pairing_enabled` for initial
+   setup; no manual token or provider credentials are required.
+4. In HACS add the same URL as a custom **Integration** repository and install
+   **MD Parking**. Alternatively copy `custom_components/md_parking` to
+   `/config/custom_components/md_parking`.
+5. Restart Home Assistant, then open **Settings > Devices & services > Add
+   integration > MD Parking**.
+6. Use `http://<HOME_ASSISTANT_IP>:8099` as the bridge URL, leave the token blank,
+   and complete the phone, object-number, and SMS steps.
+7. Disable `pairing_enabled` after setup.
 
-The integration connects only to the bridge. Provider credentials and temporary
-stream sources must never be entered in Home Assistant YAML.
-
-When adding the integration, use `http://<HA-LAN-IP>:8099` as the bridge URL
-(for example, `http://192.168.1.50:8099`). To pair without entering a token,
-temporarily enable `pairing_enabled` in the add-on and leave the integration
-token field empty. Pairing closes after the first successful connection.
-The integration then guides you through phone number, object number, and SMS
-verification. Provider tokens are stored only in the add-on data volume.
+The cameras then appear as normal `camera` entities and can be added to a
+Picture Entity or Picture Glance dashboard card. Keep ports 8099 and 8554 on
+the trusted LAN; do not expose them to the internet.
 
 ## Updates
 
-The add-on version is declared in `addon/md-parking-bridge/config.yaml` and the
-custom integration version in `custom_components/md_parking/manifest.json`.
-Update through the Add-on Store/HACS, then restart the add-on and reload the
-integration.
+Update **MD Parking Bridge** in the Add-on Store and **MD Parking** in HACS.
+Release versions are recorded in [CHANGELOG.md](CHANGELOG.md).
 
-## Security
-
-Keep the bridge API token and provider credentials in Home Assistant secrets or
-add-on options. Do not publish diagnostics, stream URLs, captures, or logs.
-
-See [installation details](docs/INSTALLATION.md) and
-[security boundaries](docs/SECURITY.md).
+Provider tokens and temporary video URLs are stored only in the add-on data
+volume. Never publish add-on data, diagnostics containing personal data,
+captures, or stream URLs. See the [installation guide](docs/INSTALLATION.md),
+[architecture](docs/ARCHITECTURE.md), and [security policy](docs/SECURITY.md).
