@@ -12,6 +12,13 @@ from homeassistant.core import HomeAssistant
 from .const import DOMAIN
 
 
+async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
+    """Migrate the original paired bridge entry to the SMS-auth flow schema."""
+    if entry.version == 1:
+        hass.config_entries.async_update_entry(entry, version=2)
+    return True
+
+
 async def _async_update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
     await hass.config_entries.async_reload(entry.entry_id)
 

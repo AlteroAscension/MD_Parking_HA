@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.2.1
+
+- Added config-entry migration from the paired 0.1.x integration.
+- Normalized Russian phone formats and matched the confirmed API user agent.
+
 ## 0.2.0
 
 - Added complete phone, object, and SMS authentication flow.
