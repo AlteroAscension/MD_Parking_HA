@@ -1,0 +1,16 @@
+{
+  "config": {
+    "step": {
+      "user": {"title": "Подключение к MD Parking Bridge", "data": {"bridge_url": "URL моста", "api_token": "Существующий токен (оставьте пустым для pairing)"}},
+      "phone": {"title": "Вход в MD Parking", "description": "Введите номер телефона аккаунта MD Parking.", "data": {"phone": "Номер телефона"}},
+      "object": {"title": "Выбор объекта", "description": "Введите номер объекта MD Parking.", "data": {"object_id": "Номер объекта"}},
+      "code": {"title": "Подтверждение по SMS", "description": "Введите полученный код из SMS.", "data": {"code": "Код из SMS"}}
+    },
+    "error": {"cannot_connect": "Не удалось подключиться или выполнить pairing", "auth_failed": "MD Parking отклонил этот шаг авторизации"}
+  },
+  "options": {"step": {
+    "phone": {"title": "Вход в MD Parking", "data": {"phone": "Номер телефона"}},
+    "object": {"title": "Выбор объекта", "data": {"object_id": "Номер объекта"}},
+    "code": {"title": "Подтверждение по SMS", "data": {"code": "Код из SMS"}}
+  }, "error": {"auth_failed": "MD Parking отклонил этот шаг авторизации"}}
+}

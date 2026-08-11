@@ -5,6 +5,7 @@ from homeassistant.components.camera import Camera
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers.aiohttp_client import async_get_clientsession
+from urllib.parse import urlsplit
 
 from .const import DOMAIN
 
@@ -15,8 +16,8 @@ async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry, async_add_e
             payload=await response.json()
     except Exception:
         return
-    base=entry.data['bridge_url'].rstrip('/').replace('http://','rtsp://').replace('https://','rtsp://')
-    async_add_entities([MdParkingCamera(item['name'],base+':8554/'+item['stream_name']) for item in payload.get('cameras',[])])
+    host=urlsplit(entry.data['bridge_url']).hostname
+    async_add_entities([MdParkingCamera(item['name'],f'rtsp://{host}:8554/{item["stream_name"]}') for item in payload.get('cameras',[])])
 
 
 class MdParkingCamera(Camera):
@@ -24,6 +25,7 @@ class MdParkingCamera(Camera):
     def __init__(self, name: str, stream_source: str) -> None:
         self._attr_name = name
         self._stream_source = stream_source
+        self._attr_unique_id = stream_source.rsplit('/',1)[-1]
     @property
     def is_on(self) -> bool: return True
     async def stream_source(self) -> str: return self._stream_source

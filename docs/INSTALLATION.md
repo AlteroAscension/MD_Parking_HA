@@ -21,6 +21,13 @@ Use `http://<HA-LAN-IP>:8099` as bridge URL and exactly the same `api_token`
 that was configured in the add-on. Do not expose port 8099 through router port
 forwarding or a public reverse proxy.
 
+For automatic pairing, enable `pairing_enabled` in the add-on and leave the
+integration token empty. The integration then asks for the MD Parking phone,
+object number, and SMS code. For an integration entry created before version
+0.2.0, open **Settings → Devices & services → MD Parking → Configure** to run
+the same provider login flow. The phone, object number, and SMS code are not
+stored in the Home Assistant config entry.
+
 Do not configure a provider RTSP URL, provider credentials, camera ID, or
 barrier ID in Home Assistant. See [SECURITY.md](SECURITY.md) and
 [BRIDGE_PROFILE.md](BRIDGE_PROFILE.md).

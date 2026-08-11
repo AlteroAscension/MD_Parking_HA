@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.2.0
+
+- Added complete phone, object, and SMS authentication flow.
+- Persisted and refreshed provider sessions inside the add-on data volume.
+- Published go2rtc port 8554 and fixed Home Assistant camera stream URLs.
+
 ## 0.1.8
 
 - Distinguish unavailable pairing from bridge connectivity failures in config flow.

@@ -30,6 +30,8 @@ When adding the integration, use `http://<HA-LAN-IP>:8099` as the bridge URL
 (for example, `http://192.168.1.50:8099`). To pair without entering a token,
 temporarily enable `pairing_enabled` in the add-on and leave the integration
 token field empty. Pairing closes after the first successful connection.
+The integration then guides you through phone number, object number, and SMS
+verification. Provider tokens are stored only in the add-on data volume.
 
 ## Updates
 
