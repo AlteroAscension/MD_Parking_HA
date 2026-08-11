@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.2.2
+
+- Ignore the obsolete persisted `/v2/base` auth URL from pre-0.2 add-on options.
+
 ## 0.2.1
 
 - Added config-entry migration from the paired 0.1.x integration.
