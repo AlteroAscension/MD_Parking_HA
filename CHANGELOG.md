@@ -1,5 +1,9 @@
 # Changelog
 
+## 0.1.5
+
+- Fixed empty auto-pairing token configuration in Home Assistant Supervisor.
+
 ## 0.1.4
 
 - Added one-time automatic bridge pairing; integration can obtain its token without manual entry.
