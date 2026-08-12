@@ -11,12 +11,15 @@ API or diagnostics.
 
 ## First setup
 
-1. Start the add-on with `pairing_enabled` enabled.
+1. Enable `pairing_enabled`, then start or restart the add-on.
 2. Add the **MD Parking** integration.
 3. Enter `http://<HOME_ASSISTANT_IP>:8099` as the bridge URL and leave the API
    token blank.
 4. Complete the phone, object-number, and SMS forms.
-5. Disable `pairing_enabled` after the integration has been added.
+5. Disable `pairing_enabled` and restart the add-on.
+
+Restart the add-on after changing any option; Supervisor provides the new
+`options.json` to a fresh container process.
 
 Ports 8099 and 8554 must remain on the trusted local network. Do not forward
 them from the router or publish them through a reverse proxy.

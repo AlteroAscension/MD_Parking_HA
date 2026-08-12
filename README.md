@@ -26,8 +26,8 @@ a stream can never invoke a barrier action.
 
 1. Open **Settings > Add-ons > Add-on store > Repositories** in Home Assistant.
 2. Add `https://github.com/AlteroAscension/MD_Parking_HA`.
-3. Install and start **MD Parking Bridge**. Enable `pairing_enabled` during
-   setup; no manual token or provider credentials are required.
+3. Install **MD Parking Bridge**, enable `pairing_enabled`, then start or restart
+   it; no manual token or provider credentials are required.
 4. In HACS add the same URL as a custom **Integration** repository and install
    **MD Parking**. Alternatively copy `custom_components/md_parking` to
    `/config/custom_components/md_parking`.
@@ -35,11 +35,12 @@ a stream can never invoke a barrier action.
    integration > MD Parking**.
 6. Enter `http://<HOME_ASSISTANT_IP>:8099`, leave the token blank, and complete
    the guided login only if requested.
-7. Disable `pairing_enabled` after setup.
+7. Disable `pairing_enabled` after setup and restart the add-on.
 
 Enable `control_enabled` only if barrier buttons are needed. The bridge applies
 `control_cooldown_seconds` independently to each barrier and persists a bounded
-audit containing only time, a hashed stable ID, and the outcome.
+audit containing only time, a hashed stable ID, and the outcome. Restart the
+add-on after changing its options.
 
 The integration creates **MD Parking** in the sidebar. Closed cards use cached
 still previews to keep resource use low; opening a card switches to the native

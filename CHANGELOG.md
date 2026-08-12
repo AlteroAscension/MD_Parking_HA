@@ -1,9 +1,13 @@
 # Changelog
 
+## 0.4.2
+
+- Clarify and verify that Supervisor options take effect after restarting the
+  add-on; avoid requesting broad Supervisor API access for live configuration.
+
 ## 0.4.1
 
-- Apply pairing, control, cooldown, retry, and stream-renewal options at runtime
-  after Supervisor saves them, without requiring a manual add-on restart.
+- Internal maintenance release superseded by 0.4.2.
 
 ## 0.4.0
 

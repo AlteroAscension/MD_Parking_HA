@@ -4,19 +4,19 @@ configuration:
     description: Leave empty to generate and persist a strong token automatically.
   pairing_enabled:
     name: Enable pairing window
-    description: Enable only while adding or replacing the Home Assistant integration.
+    description: Enable only while adding or replacing the integration, then restart the add-on.
   control_enabled:
     name: Enable barrier controls
-    description: Global kill switch for every physical barrier action.
+    description: Global kill switch for every physical barrier action. Restart after changing.
   control_cooldown_seconds:
     name: Control cooldown
-    description: Minimum seconds between actions for the same barrier.
+    description: Minimum seconds between actions for the same barrier. Restart after changing.
   refresh_before_expiry_seconds:
     name: Stream renewal margin
-    description: Renew a temporary camera source this many seconds before expiry.
+    description: Renew a temporary camera source this many seconds before expiry. Restart after changing.
   refresh_retry_seconds:
     name: Retry interval
-    description: Delay before retrying a failed provider refresh.
+    description: Delay before retrying a failed provider refresh. Restart after changing.
   provider_username:
     name: Legacy username (ignored)
     description: Retained only so existing installations can update safely.

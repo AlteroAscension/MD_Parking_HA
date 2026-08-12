@@ -9,9 +9,10 @@ add:
 https://github.com/AlteroAscension/MD_Parking_HA
 ```
 
-Install **MD Parking Bridge**. Enable `pairing_enabled`, start the add-on, and
-confirm that its log says the local API is listening on port 8099. No API token,
-provider password, object number, or SMS code is entered in add-on options.
+Install **MD Parking Bridge**. Enable `pairing_enabled`, start or restart the
+add-on, and confirm that its log says the local API is listening on port 8099.
+No API token, provider password, object number, or SMS code is entered in add-on
+options.
 
 ## 2. Install the custom integration
 
@@ -34,13 +35,16 @@ add-on run in separate containers. If the add-on already has a valid provider
 session, setup completes immediately. Otherwise, enter the phone number, object
 number, and SMS code in the guided forms.
 
-Disable `pairing_enabled` after setup. Re-enable it only while pairing a
-replacement integration entry; the add-on can then return its existing local
-token automatically.
+Disable `pairing_enabled` after setup and restart the add-on. Re-enable it only
+while pairing a replacement integration entry; restart the add-on so it can
+return its existing local token automatically.
 
 Enable `control_enabled` only when barrier buttons are required. Every dashboard
 press is confirmed, checked again by the bridge, rate-limited, and written to a
 secret-safe persistent audit. Camera refresh never calls control.
+
+Supervisor options are read when the add-on starts. Restart it after changing
+pairing, control, cooldown, or refresh settings.
 
 ## 4. Use the generated dashboard
 
