@@ -1,5 +1,10 @@
 # Changelog
 
+## 0.4.1
+
+- Apply pairing, control, cooldown, retry, and stream-renewal options at runtime
+  after Supervisor saves them, without requiring a manual add-on restart.
+
 ## 0.4.0
 
 - Harden provider communication with host/scheme validation, malformed-response
