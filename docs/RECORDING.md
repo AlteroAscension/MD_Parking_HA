@@ -91,6 +91,38 @@ pipeline even when object detection is disabled. Check CPU, memory, and disk
 usage after enabling both cameras. Increase retention only after measuring the
 actual recorded bitrate.
 
+## Smaller recording stream
+
+If direct recording uses too much disk space, keep the original stream for live
+view and create a separate software-transcoded stream for the `record` role.
+The following profile limits the archive to 1280x720, 10 FPS, and approximately
+800 kbit/s while leaving the named live stream unchanged:
+
+```yaml
+go2rtc:
+  streams:
+    camera_1:
+      - <STABLE_CAMERA_1_RTSP_URL>
+    camera_1_record:
+      - "ffmpeg:camera_1#video=h264#width=1280#height=720#bitrate=800k#raw=-r 10"
+
+cameras:
+  camera_1:
+    ffmpeg:
+      inputs:
+        - path: rtsp://127.0.0.1:8554/camera_1_record
+          input_args: preset-rtsp-restream
+          roles: [record]
+    live:
+      streams:
+        Original: camera_1
+```
+
+Apply the same pattern to each camera. This reduces storage use but consumes
+more CPU because FFmpeg must decode and encode every frame. Confirm the output
+resolution and frame rate, measure several complete recording segments, and
+restore direct recording if the host cannot sustain the additional load.
+
 ## Home Assistant integration
 
 The Frigate app performs recording. The separate Frigate integration exposes
