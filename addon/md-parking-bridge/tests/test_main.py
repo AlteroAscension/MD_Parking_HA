@@ -2,7 +2,9 @@ import sys
 import unittest
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parents[1] / "rootfs/usr/lib/python3.13/site-packages"))
+sys.path.insert(
+    0, str(Path(__file__).parents[1] / "rootfs/usr/lib/python3.13/site-packages")
+)
 
 from md_parking_bridge.main import State
 

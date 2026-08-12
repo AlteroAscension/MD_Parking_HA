@@ -16,28 +16,27 @@ from .dashboard import async_ensure_dashboard
 
 async def async_migrate_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     """Migrate the original paired bridge entry to the SMS-auth flow schema."""
-    if entry.version == 1:
+    if entry.version < 2:
         hass.config_entries.async_update_entry(entry, version=2)
-    return True
-
-
-async def _async_update_listener(hass: HomeAssistant, entry: ConfigEntry) -> None:
-    await hass.config_entries.async_reload(entry.entry_id)
+        return True
+    return entry.version == 2
 
 
 async def async_setup_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     coordinator = MdParkingCoordinator(hass, entry)
     await coordinator.async_config_entry_first_refresh()
     hass.data.setdefault(DOMAIN, {})[entry.entry_id] = coordinator
-    entry.async_on_unload(entry.add_update_listener(_async_update_listener))
     await hass.config_entries.async_forward_entry_setups(entry, PLATFORMS)
-    hass.async_create_task(
+    task = hass.async_create_task(
         async_ensure_dashboard(hass, entry), "create MD Parking dashboard"
     )
+    entry.async_on_unload(task.cancel)
     return True
 
 
 async def async_unload_entry(hass: HomeAssistant, entry: ConfigEntry) -> bool:
     await hass.config_entries.async_unload_platforms(entry, PLATFORMS)
     hass.data[DOMAIN].pop(entry.entry_id, None)
+    if not hass.data[DOMAIN]:
+        hass.data.pop(DOMAIN, None)
     return True

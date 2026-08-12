@@ -1,16 +1,47 @@
 {
   "config": {
     "step": {
-      "user": {"title": "Connect to MD Parking Bridge", "data": {"bridge_url": "Bridge URL", "api_token": "Existing token (leave empty for pairing)"}},
-      "phone": {"title": "MD Parking login", "description": "Enter the phone number used by MD Parking.", "data": {"phone": "Phone number"}},
-      "object": {"title": "Select object", "description": "Enter the object number from MD Parking.", "data": {"object_id": "Object number"}},
-      "code": {"title": "SMS verification", "description": "Enter the code received by SMS.", "data": {"code": "SMS code"}}
+      "user": {
+        "title": "Connect to MD Parking Bridge",
+        "description": "Enable pairing in the add-on and leave the token empty for automatic setup.",
+        "data": {
+          "bridge_url": "Bridge URL",
+          "api_token": "Existing token (optional)"
+        }
+      },
+      "phone": {
+        "title": "MD Parking login",
+        "description": "Enter the phone number used by MD Parking.",
+        "data": {"phone": "Phone number"}
+      },
+      "object": {
+        "title": "Select object",
+        "description": "Enter the object number from MD Parking. This requests the SMS code.",
+        "data": {"object_id": "Object number"}
+      },
+      "code": {
+        "title": "SMS verification",
+        "description": "Enter the code received by SMS.",
+        "data": {"code": "SMS code"}
+      }
     },
-    "error": {"cannot_connect": "Cannot connect or pair with the bridge", "auth_failed": "MD Parking rejected this authentication step"}
+    "error": {
+      "cannot_connect": "Cannot connect to the bridge",
+      "invalid_url": "Enter the bridge origin, for example http://192.168.1.10:8099",
+      "pairing_disabled": "Enable pairing in the MD Parking Bridge add-on",
+      "auth_failed": "MD Parking rejected this authentication step"
+    },
+    "abort": {"already_configured": "This bridge is already configured"}
   },
-  "options": {"step": {
-    "phone": {"title": "MD Parking login", "data": {"phone": "Phone number"}},
-    "object": {"title": "Select object", "data": {"object_id": "Object number"}},
-    "code": {"title": "SMS verification", "data": {"code": "SMS code"}}
-  }, "error": {"auth_failed": "MD Parking rejected this authentication step"}}
+  "options": {
+    "step": {
+      "phone": {"title": "Sign in again", "data": {"phone": "Phone number"}},
+      "object": {"title": "Select object", "data": {"object_id": "Object number"}},
+      "code": {"title": "SMS verification", "data": {"code": "SMS code"}}
+    },
+    "error": {
+      "cannot_connect": "Cannot connect to the bridge",
+      "auth_failed": "MD Parking rejected this authentication step"
+    }
+  }
 }

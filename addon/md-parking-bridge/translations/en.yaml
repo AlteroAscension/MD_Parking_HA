@@ -1,0 +1,49 @@
+configuration:
+  api_token:
+    name: Local API token
+    description: Leave empty to generate and persist a strong token automatically.
+  pairing_enabled:
+    name: Enable pairing window
+    description: Enable only while adding or replacing the Home Assistant integration.
+  control_enabled:
+    name: Enable barrier controls
+    description: Global kill switch for every physical barrier action.
+  control_cooldown_seconds:
+    name: Control cooldown
+    description: Minimum seconds between actions for the same barrier.
+  refresh_before_expiry_seconds:
+    name: Stream renewal margin
+    description: Renew a temporary camera source this many seconds before expiry.
+  refresh_retry_seconds:
+    name: Retry interval
+    description: Delay before retrying a failed provider refresh.
+  provider_username:
+    name: Legacy username (ignored)
+    description: Retained only so existing installations can update safely.
+  provider_password:
+    name: Legacy password (ignored)
+    description: Retained only so existing installations can update safely.
+  auth_url:
+    name: Legacy authentication URL (ignored)
+    description: The verified provider endpoint is built in and cannot be overridden.
+  app:
+    name: Legacy app value (ignored)
+    description: Retained only so existing installations can update safely.
+  client_id:
+    name: Legacy client ID (ignored)
+    description: Retained only so existing installations can update safely.
+  fingerprint:
+    name: Legacy fingerprint (ignored)
+    description: Retained only so existing installations can update safely.
+  provider_object_id:
+    name: Legacy object number (ignored)
+    description: Enter the object number only in the guided integration login.
+  provider_sms_code:
+    name: Legacy SMS code (ignored)
+    description: Enter an SMS code only in the guided integration login.
+  camera_aliases:
+    name: Legacy camera aliases (ignored)
+    description: Camera names are discovered automatically.
+network:
+  8099/tcp: Authenticated bridge API (trusted LAN only)
+  8554/tcp: Stable local RTSP streams (trusted LAN only)

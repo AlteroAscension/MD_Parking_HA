@@ -3,5 +3,22 @@ set -euo pipefail
 
 export API_TOKEN="$(bashio::config 'api_token')"
 export PYTHONPATH="/usr/lib/python3.13/site-packages${PYTHONPATH:+:$PYTHONPATH}"
-go2rtc >/dev/null 2>&1 &
+
+go2rtc -config /etc/go2rtc.yaml >/dev/null 2>&1 &
+go2rtc_pid=$!
+for _ in $(seq 1 30); do
+    if curl --fail --silent --max-time 1 http://127.0.0.1:1984/api >/dev/null; then
+        break
+    fi
+    if ! kill -0 "${go2rtc_pid}" 2>/dev/null; then
+        bashio::log.fatal "go2rtc stopped before becoming ready"
+        exit 1
+    fi
+    sleep 0.2
+done
+if ! curl --fail --silent --max-time 1 http://127.0.0.1:1984/api >/dev/null; then
+    bashio::log.fatal "go2rtc did not become ready"
+    exit 1
+fi
+
 exec python3 -m md_parking_bridge.main

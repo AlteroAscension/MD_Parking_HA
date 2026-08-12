@@ -1,53 +1,58 @@
 # MD Parking for Home Assistant
 
-MD Parking cameras in Home Assistant through a local add-on and custom
-integration. The add-on performs account authentication, keeps the provider
-session alive, renews short-lived camera sources, and restreams them under
-stable local addresses. The integration creates native Home Assistant camera
-entities.
+MD Parking cameras and guarded barrier controls in Home Assistant through a
+local add-on and custom integration. The add-on authenticates the account,
+keeps the provider session alive, renews short-lived camera sources, and
+restreams them under stable local addresses. The integration creates native
+camera, button, and connectivity entities plus a ready-to-use sidebar page.
 
 ## Features
 
 - guided phone, object-number, and SMS authentication;
-- automatic discovery of cameras available to the account;
-- automatic provider-session and video-source renewal;
+- automatic pairing without manually copying an API token;
+- automatic camera and barrier discovery;
+- provider-session and short-lived video-source renewal;
 - stable local H.264 streams through bundled go2rtc;
-- Home Assistant camera and barrier-button entities with secret-safe diagnostics;
+- full-frame-rate video when a camera card is opened;
+- guarded barrier buttons with confirmation, kill switch, cooldown, and audit;
+- a responsive sidebar dashboard that preserves user edits;
+- secret-safe Home Assistant diagnostics;
 - installation and updates from this Git repository.
 
-Barrier control is implemented as a separate, explicitly enabled path with UI
-confirmation, a server-side kill switch, per-barrier rate limiting, and audit.
-Camera and session refresh code never invokes a barrier action.
+Camera/session refresh and barrier control are separate code paths. Refreshing
+a stream can never invoke a barrier action.
 
 ## Installation
 
-1. In Home Assistant open **Settings > Add-ons > Add-on store > Repositories**.
+1. Open **Settings > Add-ons > Add-on store > Repositories** in Home Assistant.
 2. Add `https://github.com/AlteroAscension/MD_Parking_HA`.
-3. Install and start **MD Parking Bridge**. Enable `pairing_enabled` for initial
+3. Install and start **MD Parking Bridge**. Enable `pairing_enabled` during
    setup; no manual token or provider credentials are required.
 4. In HACS add the same URL as a custom **Integration** repository and install
    **MD Parking**. Alternatively copy `custom_components/md_parking` to
    `/config/custom_components/md_parking`.
 5. Restart Home Assistant, then open **Settings > Devices & services > Add
    integration > MD Parking**.
-6. Use `http://<HOME_ASSISTANT_IP>:8099` as the bridge URL, leave the token blank,
-   and complete the phone, object-number, and SMS steps.
+6. Enter `http://<HOME_ASSISTANT_IP>:8099`, leave the token blank, and complete
+   the guided login only if requested.
 7. Disable `pairing_enabled` after setup.
 
-To enable opening controls, enable `control_enabled` in the add-on options. The
-generated dashboard shows one confirmed-action button for every available
-barrier. `control_cooldown_seconds` limits repeated requests.
+Enable `control_enabled` only if barrier buttons are needed. The bridge applies
+`control_cooldown_seconds` independently to each barrier and persists a bounded
+audit containing only time, a hashed stable ID, and the outcome.
 
-The cameras then appear as normal `camera` entities and can be added to a
-Picture Entity or Picture Glance dashboard card. Keep ports 8099 and 8554 on
-the trusted LAN; do not expose them to the internet.
+The integration creates **MD Parking** in the sidebar. Closed cards use cached
+still previews to keep resource use low; opening a card switches to the native
+Home Assistant stream at the source frame rate. The device page includes a
+connectivity diagnostic entity.
 
 ## Updates
 
 Update **MD Parking Bridge** in the Add-on Store and **MD Parking** in HACS.
-Release versions are recorded in [CHANGELOG.md](CHANGELOG.md).
+Both components use the same release version; changes are recorded in
+[CHANGELOG.md](CHANGELOG.md).
 
-Provider tokens and temporary video URLs are stored only in the add-on data
-volume. Never publish add-on data, diagnostics containing personal data,
-captures, or stream URLs. See the [installation guide](docs/INSTALLATION.md),
+Keep ports 8099 and 8554 on the trusted LAN. Provider sessions and temporary
+video URLs remain only in the add-on data volume. Never publish add-on data,
+captures, tokens, or stream URLs. See the [installation guide](docs/INSTALLATION.md),
 [architecture](docs/ARCHITECTURE.md), and [security policy](docs/SECURITY.md).

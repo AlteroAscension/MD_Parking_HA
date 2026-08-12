@@ -1,8 +1,11 @@
 import sys
+import tempfile
 import unittest
 from pathlib import Path
 
-sys.path.insert(0, str(Path(__file__).parents[1] / "rootfs/usr/lib/python3.13/site-packages"))
+sys.path.insert(
+    0, str(Path(__file__).parents[1] / "rootfs/usr/lib/python3.13/site-packages")
+)
 
 from md_parking_bridge.control import (
     ConfirmationRequired,
@@ -13,7 +16,9 @@ from md_parking_bridge.control import (
 
 
 class FakeBridge:
-    def __init__(self): self.calls = []
+    def __init__(self):
+        self.calls = []
+
     def open_barrier(self, barrier_id):
         self.calls.append(barrier_id)
         return {"status": "OK"}
@@ -29,9 +34,19 @@ class ControlTest(unittest.TestCase):
         self.assertEqual(bridge.calls, [])
 
     def test_success_is_audited_and_rate_limited(self):
-        bridge = FakeBridge(); manager = ControlManager(True, 15)
+        bridge = FakeBridge()
+        manager = ControlManager(True, 15)
         result = manager.open(bridge, "safe-id", True)
         self.assertEqual(result["result"], "accepted")
         self.assertEqual(manager.audit()[0]["barrier_id"], "safe-id")
-        with self.assertRaises(RateLimited): manager.open(bridge, "safe-id", True)
+        with self.assertRaises(RateLimited):
+            manager.open(bridge, "safe-id", True)
         self.assertEqual(bridge.calls, ["safe-id"])
+
+    def test_audit_survives_restart(self):
+        with tempfile.TemporaryDirectory() as directory:
+            path = Path(directory) / "audit.json"
+            manager = ControlManager(True, 15, path)
+            manager.open(FakeBridge(), "safe-id", True)
+            restored = ControlManager(True, 15, path)
+            self.assertEqual(restored.audit()[0]["result"], "accepted")

@@ -1,5 +1,25 @@
 # Changelog
 
+## 0.4.0
+
+- Harden provider communication with host/scheme validation, malformed-response
+  handling, thread-safe state, and atomic session persistence.
+- Verify the bundled go2rtc binary, bind its control API to loopback, and wait
+  for readiness before starting the bridge.
+- Persist the bounded secret-safe barrier audit across add-on restarts.
+- Harden the local API with request limits, constant-time token checks, no-store
+  responses, proper method handling, and richer secret-safe health data.
+- Allow automatic local-token recovery only while the explicit pairing window
+  is enabled.
+- Add a shared asynchronous bridge client, concurrent coordinator polling,
+  dynamic entity discovery, integration diagnostics, and a connectivity entity.
+- Cache still previews while retaining full-frame-rate native streaming for
+  opened camera cards.
+- Replace broken Cyrillic UI strings and group each camera with its matching
+  guarded button on the generated dashboard.
+- Remove obsolete research-only profile code and workstation documentation from
+  the distributable project.
+
 ## 0.3.2
 
 - Advertise Home Assistant's native camera `STREAM` feature and use RTSP over

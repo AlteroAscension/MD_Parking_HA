@@ -2,38 +2,39 @@
 
 ## Secrets and local data
 
-The following stay exclusively in `.local/` or a Home Assistant add-on secret
-store, never in Git, issue text, screenshots, release assets or diagnostics:
+The following stay exclusively in `.local/` or the Home Assistant add-on data
+volume, never in Git, issues, screenshots, release assets, or diagnostics:
 
-- provider login data;
-- access/refresh/session tokens;
+- provider login data and session tokens;
 - signed RTSP URLs and their query strings;
-- APK files, PCAP/HAR captures and screenshots with camera content;
-- apartment/address, phone number and raw provider object IDs.
+- APK files, network captures, and camera screenshots;
+- address, phone number, and raw provider object identifiers.
 
-Bridge logs must redact query strings and HTTP
-`Authorization`/cookie headers.
+Bridge errors use fixed safe codes. URLs, authorization headers, response
+bodies, and provider identifiers are not logged.
 
 ## Functional boundary
 
-Video and barrier control are different trust domains.
+Video and barrier control are separate trust domains.
 
 - Video source acquisition is read-only and may run automatically.
-- Opening a barrier is a physical action and must never be triggered by a video
-  refresh, an availability retry, an automation, or a free-form URL parameter.
-- The generated UI uses a confirmation step and names the target barrier.
-- The add-on has a global `control_enabled` kill switch. Control is disabled by
-  default until the user explicitly turns it on.
-- The bridge accepts only discovered, hashed barrier IDs, enforces a per-target
-  cooldown, and keeps a secret-safe audit of attempts and results.
+- Opening a barrier is never triggered by video refresh, availability retries,
+  or a free-form URL parameter.
+- The generated UI confirms the target action immediately before sending it.
+- The global `control_enabled` kill switch is disabled by default.
+- Only barriers from the authenticated inventory have valid hashed local IDs.
+- A per-target cooldown limits repeats.
+- The bounded persistent audit contains only a timestamp, hashed ID, and result.
+
+Pairing is possible only while `pairing_enabled` is explicitly enabled. Close
+that window immediately after connecting an integration entry.
 
 ## Network boundary
 
-The external provider API and RTSP origin are untrusted internet dependencies.
-The bridge should expose only localhost/add-on-internal ports to Home Assistant;
-do not expose its diagnostics, restream input or control endpoint through the
-public HA URL.
+The external provider API and RTSP origin are untrusted dependencies. Provider
+HTTPS endpoints and media URL schemes/hosts are allow-listed. The go2rtc control
+API binds only to loopback inside the add-on container.
 
-The restream output should remain LAN/HA-internal. External viewing, if ever
-needed, must be handled through Home Assistant authentication rather than by
-publishing an RTSP address.
+Ports 8099 and 8554 must remain on the trusted LAN and must not be exposed by a
+router or public reverse proxy. Remote viewing should pass through Home
+Assistant authentication rather than publish the bridge directly.
