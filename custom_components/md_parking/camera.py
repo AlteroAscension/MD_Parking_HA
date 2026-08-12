@@ -3,7 +3,7 @@ from __future__ import annotations
 
 from urllib.parse import urlsplit
 
-from homeassistant.components.camera import Camera
+from homeassistant.components.camera import Camera, CameraEntityFeature
 from homeassistant.components.ffmpeg import DATA_FFMPEG
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
@@ -33,6 +33,7 @@ class MdParkingCamera(CoordinatorEntity[MdParkingCoordinator], Camera):
     """A stable local camera managed by the bridge coordinator."""
 
     _attr_has_entity_name = True
+    _attr_supported_features = CameraEntityFeature.STREAM
 
     def __init__(
         self,
@@ -50,6 +51,7 @@ class MdParkingCamera(CoordinatorEntity[MdParkingCoordinator], Camera):
         self._attr_name = camera["name"]
         self._attr_unique_id = camera["id"]
         self._stream_source = f'rtsp://{host}:8554/{camera["stream_name"]}'
+        self.stream_options["rtsp_transport"] = "tcp"
         self._attr_device_info = DeviceInfo(
             identifiers={(DOMAIN, entry.entry_id)},
             name="MD Parking",

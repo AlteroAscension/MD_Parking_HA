@@ -1,5 +1,11 @@
 # Changelog
 
+## 0.3.2
+
+- Advertise Home Assistant's native camera `STREAM` feature and use RTSP over
+  TCP, enabling full-frame-rate video when a camera card is opened.
+- Keep the closed dashboard cards on lightweight still previews.
+
 ## 0.3.1
 
 - Use the broadly supported Lovelace `call-service` action for barrier buttons.

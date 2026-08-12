@@ -43,7 +43,7 @@ def _dashboard_config(camera_ids: list[str], button_ids: list[str]) -> dict:
         {
             "type": "picture-entity",
             "entity": entity_id,
-            "camera_view": "live",
+            "camera_view": "auto",
             "show_name": True,
             "show_state": True,
         }
@@ -98,6 +98,15 @@ async def async_ensure_dashboard(hass: HomeAssistant, entry: ConfigEntry) -> Non
                 # generated button actions and preserve every other card.
                 changed = False
                 for stack in current.get("views", [{}])[0].get("cards", []):
+                    if (
+                        stack.get("type") == "picture-entity"
+                        and stack.get("entity") in camera_ids
+                        and stack.get("camera_view") == "live"
+                    ):
+                        # Keep the dashboard preview lightweight. Opening the
+                        # card uses the entity's STREAM feature at full rate.
+                        stack["camera_view"] = "auto"
+                        changed = True
                     if stack.get("type") != "horizontal-stack":
                         continue
                     for card in stack.get("cards", []):
