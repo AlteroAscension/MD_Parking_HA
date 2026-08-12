@@ -5,6 +5,7 @@ from __future__ import annotations
 import asyncio
 import logging
 import re
+from urllib.parse import urlsplit
 
 from homeassistant.components import frontend
 from homeassistant.components.lovelace import LOVELACE_DATA, MODE_STORAGE
@@ -12,6 +13,8 @@ from homeassistant.components.lovelace import dashboard as lovelace_dashboard
 from homeassistant.config_entries import ConfigEntry
 from homeassistant.core import HomeAssistant
 from homeassistant.helpers import entity_registry as er
+
+from .const import CONF_BRIDGE_URL
 
 LOGGER = logging.getLogger(__name__)
 DASHBOARD_PATH = "md-parking"
@@ -57,10 +60,76 @@ def _button_card(entity_id: str) -> dict:
     }
 
 
+def _recorder_info_card(status_id: str | None) -> dict:
+    action = {
+        "action": "navigate",
+        "navigation_path": f"/{DASHBOARD_PATH}/info",
+    }
+    if status_id:
+        return {
+            "type": "tile",
+            "entity": status_id,
+            "name": "Подключение к видеорегистратору",
+            "icon": "mdi:information-outline",
+            "hide_state": True,
+            "tap_action": action,
+            "icon_tap_action": action,
+            "hold_action": {"action": "none"},
+        }
+    return {
+        "type": "button",
+        "name": "Подключение к видеорегистратору",
+        "icon": "mdi:information-outline",
+        "show_state": False,
+        "tap_action": action,
+        "hold_action": {"action": "none"},
+    }
+
+
+def _safe_markdown_label(value: str) -> str:
+    return value.replace("`", "'").replace("\r", " ").replace("\n", " ").strip()
+
+
+def _recorder_view(
+    cameras: list[tuple[str, str]], camera_names: dict[str, str], host: str
+) -> dict:
+    sections = []
+    for number, (entity_id, stream_name) in enumerate(cameras, start=1):
+        name = _safe_markdown_label(camera_names.get(entity_id) or f"Камера {number}")
+        sections.append(
+            f"### {name}\n\n"
+            "Скопируйте адрес целиком:\n\n"
+            f"```text\nrtsp://{host}:8554/{stream_name}\n```"
+        )
+    content = (
+        "## Подключение к видеорегистратору\n\n"
+        "Эти стабильные локальные RTSP-адреса подходят для NVR, VLC, "
+        "Frigate, Blue Iris и другого ПО с поддержкой RTSP.\n\n"
+        + "\n\n".join(sections)
+        + "\n\n---\n\n"
+        "- видеокодек: **H.264**;\n"
+        "- транспорт: **RTSP over TCP**;\n"
+        "- аудиодорожки нет;\n"
+        "- логин и пароль не требуются внутри доверенной локальной сети.\n\n"
+        "Не публикуйте порт **8554** в интернете. Для удалённого просмотра "
+        "используйте защищённый доступ к Home Assistant или VPN."
+    )
+    return {
+        "title": "Подключение",
+        "path": "info",
+        "icon": "mdi:information-outline",
+        "subview": True,
+        "back_path": f"/{DASHBOARD_PATH}/cameras",
+        "cards": [{"type": "markdown", "content": content}],
+    }
+
+
 def _dashboard_config(
     cameras: list[tuple[str, str]],
     buttons: list[tuple[str, str]],
     status_ids: list[str],
+    recorder_host: str | None = None,
+    camera_names: dict[str, str] | None = None,
     button_factory=_button_card,
 ) -> dict:
     button_by_digest = {
@@ -79,6 +148,8 @@ def _dashboard_config(
                 "entities": status_ids,
             }
         )
+    if recorder_host:
+        cards.append(_recorder_info_card(status_ids[0] if status_ids else None))
     for entity_id, unique_id in cameras:
         camera_card = {
             "type": "picture-entity",
@@ -110,16 +181,17 @@ def _dashboard_config(
                 "cards": [button_factory(entity_id) for entity_id in unused_buttons],
             }
         )
-    return {
-        "views": [
-            {
-                "title": "MD Parking",
-                "path": "cameras",
-                "icon": "mdi:cctv",
-                "cards": cards,
-            }
-        ]
-    }
+    views = [
+        {
+            "title": "MD Parking",
+            "path": "cameras",
+            "icon": "mdi:cctv",
+            "cards": cards,
+        }
+    ]
+    if recorder_host:
+        views.append(_recorder_view(cameras, camera_names or {}, recorder_host))
+    return {"views": views}
 
 
 def _is_legacy_generated(
@@ -198,8 +270,26 @@ async def async_ensure_dashboard(hass: HomeAssistant, entry: ConfigEntry) -> Non
         cameras, buttons, status_ids = await _entry_entities(hass, entry)
         if not cameras or LOVELACE_DATA not in hass.data:
             return
-        desired = _dashboard_config(cameras, buttons, status_ids)
-        early_040 = _dashboard_config(cameras, buttons, status_ids, _legacy_button_card)
+        host = urlsplit(entry.data[CONF_BRIDGE_URL]).hostname
+        if not host:
+            return
+        recorder_host = f"[{host}]" if ":" in host else host
+        camera_names = {
+            entity_id: state.name
+            for entity_id, _ in cameras
+            if (state := hass.states.get(entity_id)) is not None
+        }
+        desired = _dashboard_config(
+            cameras,
+            buttons,
+            status_ids,
+            recorder_host,
+            camera_names,
+        )
+        release_042 = _dashboard_config(cameras, buttons, status_ids)
+        early_040 = _dashboard_config(
+            cameras, buttons, status_ids, button_factory=_legacy_button_card
+        )
         camera_ids = {entity_id for entity_id, _ in cameras}
         button_ids = {entity_id for entity_id, _ in buttons}
 
@@ -220,7 +310,7 @@ async def async_ensure_dashboard(hass: HomeAssistant, entry: ConfigEntry) -> Non
             current = await config.async_load(False)
             if current == desired:
                 return
-            if current == early_040 or _is_legacy_generated(
+            if current in (release_042, early_040) or _is_legacy_generated(
                 current, camera_ids, button_ids
             ):
                 await config.async_save(desired)

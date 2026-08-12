@@ -1,5 +1,13 @@
 # Changelog
 
+## 0.5.0
+
+- Add a compact recorder-information tile to the generated dashboard.
+- Add a dedicated subview with stable per-camera local RTSP addresses ready to
+  copy into an NVR, VLC, Frigate, Blue Iris, or other RTSP-compatible software.
+- Document H.264, RTSP-over-TCP, no-audio, and trusted-LAN requirements without
+  exposing provider stream capabilities.
+
 ## 0.4.2
 
 - Clarify and verify that Supervisor options take effect after restarting the

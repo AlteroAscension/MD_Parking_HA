@@ -53,6 +53,11 @@ matching guarded button together. Closed cards use still previews; click a
 camera to open the full-rate native stream. The same entities can be used in
 your own dashboards.
 
+Use **Подключение к видеорегистратору** on this page to open a subview containing
+one stable local RTSP address per camera. Copy the required address into an NVR,
+VLC, Frigate, Blue Iris, or other RTSP-compatible application and select RTSP
+over TCP. The streams contain H.264 video without audio.
+
 The generated dashboard is migrated only while it still matches a layout made
 by an older release. Once edited, it is left untouched.
 

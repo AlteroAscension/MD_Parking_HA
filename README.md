@@ -16,6 +16,7 @@ camera, button, and connectivity entities plus a ready-to-use sidebar page.
 - full-frame-rate video when a camera card is opened;
 - guarded barrier buttons with confirmation, kill switch, cooldown, and audit;
 - a responsive sidebar dashboard that preserves user edits;
+- an information page with stable local RTSP addresses for recording software;
 - secret-safe Home Assistant diagnostics;
 - installation and updates from this Git repository.
 
@@ -45,7 +46,8 @@ add-on after changing its options.
 The integration creates **MD Parking** in the sidebar. Closed cards use cached
 still previews to keep resource use low; opening a card switches to the native
 Home Assistant stream at the source frame rate. The device page includes a
-connectivity diagnostic entity.
+connectivity diagnostic entity. Use **Подключение к видеорегистратору** on the
+dashboard to copy stable local RTSP addresses into NVR software.
 
 ## Updates
 

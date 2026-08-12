@@ -38,3 +38,9 @@ API binds only to loopback inside the add-on container.
 Ports 8099 and 8554 must remain on the trusted LAN and must not be exposed by a
 router or public reverse proxy. Remote viewing should pass through Home
 Assistant authentication rather than publish the bridge directly.
+
+The dashboard may display stable local `rtsp://` restream addresses for use by
+recording software. They contain only a hashed stream name, never a provider
+identifier, provider token, or temporary signed capability. Anyone with access
+to port 8554 on the trusted LAN can view these streams, so network isolation is
+the access-control boundary.
