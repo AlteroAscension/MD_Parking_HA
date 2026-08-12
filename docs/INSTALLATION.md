@@ -58,6 +58,10 @@ one stable local RTSP address per camera. Copy the required address into an NVR,
 VLC, Frigate, Blue Iris, or other RTSP-compatible application and select RTSP
 over TCP. The streams contain H.264 video without audio.
 
+For local recording, use the tested [Frigate setup](RECORDING.md). Start with a
+six-hour archive and object detection disabled, then increase retention only
+after checking disk use.
+
 The generated dashboard is migrated only while it still matches a layout made
 by an older release. Once edited, it is left untouched.
 
@@ -75,4 +79,5 @@ with [CHANGELOG.md](../CHANGELOG.md).
 
 Do not expose ports 8099 or 8554 through router forwarding or a public reverse
 proxy. Do not put provider tokens, stream URLs, account identifiers, or SMS
-codes in YAML or Git. See [SECURITY.md](SECURITY.md).
+codes in YAML or Git. See [RECORDING.md](RECORDING.md) and
+[SECURITY.md](SECURITY.md).

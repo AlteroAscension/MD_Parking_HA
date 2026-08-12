@@ -58,4 +58,5 @@ Both components use the same release version; changes are recorded in
 Keep ports 8099 and 8554 on the trusted LAN. Provider sessions and temporary
 video URLs remain only in the add-on data volume. Never publish add-on data,
 captures, tokens, or stream URLs. See the [installation guide](docs/INSTALLATION.md),
-[architecture](docs/ARCHITECTURE.md), and [security policy](docs/SECURITY.md).
+[recording guide](docs/RECORDING.md), [architecture](docs/ARCHITECTURE.md), and
+[security policy](docs/SECURITY.md).
