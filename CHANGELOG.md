@@ -1,5 +1,14 @@
 # Changelog
 
+## 0.5.1
+
+- Add the `md-parking/car` dashboard view for a landscape vehicle display:
+  a two-column camera grid with each matching guarded barrier button directly
+  below the preview.
+- Keep the existing general camera and recorder-information views unchanged.
+- Migrate the generated 0.5.0 dashboard layout to include the vehicle view;
+  dashboards edited by the user remain untouched.
+
 ## 0.5.0
 
 - Add a compact recorder-information tile to the generated dashboard.
