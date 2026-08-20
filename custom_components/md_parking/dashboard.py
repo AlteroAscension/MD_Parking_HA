@@ -131,6 +131,7 @@ def _dashboard_config(
     recorder_host: str | None = None,
     camera_names: dict[str, str] | None = None,
     button_factory=_button_card,
+    include_car_view: bool = True,
 ) -> dict:
     button_by_digest = {
         digest: entity_id
@@ -191,6 +192,49 @@ def _dashboard_config(
     ]
     if recorder_host:
         views.append(_recorder_view(cameras, camera_names or {}, recorder_host))
+    if include_car_view:
+        car_cards: list[dict] = []
+        for entity_id, unique_id in cameras:
+            camera_card = {
+                "type": "picture-entity",
+                "entity": entity_id,
+                "camera_view": "auto",
+                "show_name": True,
+                "show_state": False,
+                "tap_action": {"action": "more-info"},
+            }
+            digest = _digest(unique_id)
+            button_id = button_by_digest.get(digest) if digest else None
+            if button_id:
+                used_buttons.add(button_id)
+                car_cards.append(
+                    {
+                        "type": "vertical-stack",
+                        "cards": [camera_card, button_factory(button_id)],
+                    }
+                )
+            else:
+                car_cards.append(camera_card)
+        remaining_buttons = [
+            entity_id for entity_id, _ in buttons if entity_id not in used_buttons
+        ]
+        if remaining_buttons:
+            car_cards.extend(button_factory(entity_id) for entity_id in remaining_buttons)
+        views.append(
+            {
+                "title": "Авто",
+                "path": "car",
+                "icon": "mdi:car",
+                "cards": [
+                    {
+                        "type": "grid",
+                        "columns": 2,
+                        "square": False,
+                        "cards": car_cards,
+                    }
+                ],
+            }
+        )
     return {"views": views}
 
 
@@ -286,6 +330,14 @@ async def async_ensure_dashboard(hass: HomeAssistant, entry: ConfigEntry) -> Non
             recorder_host,
             camera_names,
         )
+        previous_release = _dashboard_config(
+            cameras,
+            buttons,
+            status_ids,
+            recorder_host,
+            camera_names,
+            include_car_view=False,
+        )
         release_042 = _dashboard_config(cameras, buttons, status_ids)
         early_040 = _dashboard_config(
             cameras, buttons, status_ids, button_factory=_legacy_button_card
@@ -310,7 +362,7 @@ async def async_ensure_dashboard(hass: HomeAssistant, entry: ConfigEntry) -> Non
             current = await config.async_load(False)
             if current == desired:
                 return
-            if current in (release_042, early_040) or _is_legacy_generated(
+            if current in (previous_release, release_042, early_040) or _is_legacy_generated(
                 current, camera_ids, button_ids
             ):
                 await config.async_save(desired)
