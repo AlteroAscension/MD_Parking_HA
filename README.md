@@ -16,7 +16,7 @@ camera, button, and connectivity entities plus a ready-to-use sidebar page.
 - full-frame-rate video when a camera card is opened;
 - guarded barrier buttons with confirmation, kill switch, cooldown, and audit;
 - a responsive sidebar dashboard that preserves user edits;
-- a dedicated landscape vehicle view at `/md-parking/car` with a compact
+- a dedicated landscape vehicle dashboard at `/md-parking-car/car` with a compact
   camera-and-barrier layout;
 - an information page with stable local RTSP addresses for recording software;
 - secret-safe Home Assistant diagnostics;
@@ -47,7 +47,7 @@ add-on after changing its options.
 
 The integration creates **MD Parking** in the sidebar. Closed cards use cached
 still previews to keep resource use low; opening a card switches to the native
-Home Assistant stream at the source frame rate. The `/md-parking/car` view is
+Home Assistant stream at the source frame rate. The `/md-parking-car/car` dashboard is
 optimized for a landscape vehicle display: cameras are arranged in a two-column
 grid with their matching confirmed barrier buttons immediately below. The device page includes a
 connectivity diagnostic entity. Use **Подключение к видеорегистратору** on the

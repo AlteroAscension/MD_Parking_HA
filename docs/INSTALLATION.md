@@ -53,7 +53,7 @@ matching guarded button together. Closed cards use still previews; click a
 camera to open the full-rate native stream. The same entities can be used in
 your own dashboards.
 
-For a landscape vehicle display, open `https://<HOME_ASSISTANT_URL>/md-parking/car`.
+For a landscape vehicle display, open `https://<HOME_ASSISTANT_URL>/md-parking-car/car`.
 This compact view uses a two-column grid of camera previews and places each
 camera's confirmed barrier control below it. It contains no connection-status
 or recorder-information cards.
@@ -68,9 +68,8 @@ six-hour archive and object detection disabled, then increase retention only
 after checking disk use.
 
 The generated dashboard is migrated only while it still matches a layout made
-by an older release. Version 0.5.1 adds the vehicle view to an unedited 0.5.0
-layout, and 0.5.2 expands its grid to a full-width panel. Once edited, it is
-left untouched.
+by an older release. The dedicated vehicle dashboard introduced in 0.5.3 is
+managed separately and never changes an edited regular MD Parking dashboard.
 
 ## Reauthentication
 

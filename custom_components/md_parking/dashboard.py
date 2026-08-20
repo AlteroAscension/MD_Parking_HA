@@ -18,6 +18,7 @@ from .const import CONF_BRIDGE_URL
 
 LOGGER = logging.getLogger(__name__)
 DASHBOARD_PATH = "md-parking"
+CAR_DASHBOARD_PATH = "md-parking-car"
 
 
 def _digest(unique_id: str) -> str | None:
@@ -240,6 +241,63 @@ def _dashboard_config(
     return {"views": views}
 
 
+def _car_dashboard_config(
+    cameras: list[tuple[str, str]], buttons: list[tuple[str, str]]
+) -> dict:
+    """Build the app-owned full-width dashboard for the vehicle display."""
+    button_by_digest = {
+        digest: entity_id
+        for entity_id, unique_id in buttons
+        if (digest := _digest(unique_id)) is not None
+    }
+    used_buttons: set[str] = set()
+    cards: list[dict] = []
+    for entity_id, unique_id in cameras:
+        camera_card = {
+            "type": "picture-entity",
+            "entity": entity_id,
+            "camera_view": "auto",
+            "show_name": True,
+            "show_state": False,
+            "tap_action": {"action": "more-info"},
+        }
+        digest = _digest(unique_id)
+        button_id = button_by_digest.get(digest) if digest else None
+        if button_id:
+            used_buttons.add(button_id)
+            cards.append(
+                {
+                    "type": "vertical-stack",
+                    "cards": [camera_card, _button_card(button_id)],
+                }
+            )
+        else:
+            cards.append(camera_card)
+    cards.extend(
+        _button_card(entity_id)
+        for entity_id, _ in buttons
+        if entity_id not in used_buttons
+    )
+    return {
+        "views": [
+            {
+                "title": "Авто",
+                "path": "car",
+                "icon": "mdi:car",
+                "panel": True,
+                "cards": [
+                    {
+                        "type": "grid",
+                        "columns": 2,
+                        "square": False,
+                        "cards": cards,
+                    }
+                ],
+            }
+        ]
+    }
+
+
 def _is_legacy_generated(
     current: object, camera_ids: set[str], button_ids: set[str]
 ) -> bool:
@@ -310,6 +368,51 @@ async def _entry_entities(
     return cameras, buttons, status_ids
 
 
+async def _async_ensure_car_dashboard(
+    hass: HomeAssistant,
+    collection: lovelace_dashboard.DashboardsCollection,
+    cameras: list[tuple[str, str]],
+    buttons: list[tuple[str, str]],
+) -> None:
+    """Create/update the app-owned vehicle dashboard without touching user UI."""
+    desired = _car_dashboard_config(cameras, buttons)
+    existing = next(
+        (
+            item
+            for item in collection.async_items()
+            if item.get("url_path") == CAR_DASHBOARD_PATH
+        ),
+        None,
+    )
+    if existing:
+        config = hass.data[LOVELACE_DATA].dashboards.get(CAR_DASHBOARD_PATH)
+        if config is not None and await config.async_load(False) != desired:
+            await config.async_save(desired)
+        return
+    item = await collection.async_create_item(
+        {
+            "url_path": CAR_DASHBOARD_PATH,
+            "title": "MD Parking Auto",
+            "icon": "mdi:car",
+            "show_in_sidebar": False,
+            "require_admin": False,
+        }
+    )
+    config = lovelace_dashboard.LovelaceStorage(hass, item)
+    await config.async_save(desired)
+    hass.data[LOVELACE_DATA].dashboards[CAR_DASHBOARD_PATH] = config
+    frontend.async_register_built_in_panel(
+        hass,
+        "lovelace",
+        sidebar_title="MD Parking Auto",
+        sidebar_icon="mdi:car",
+        frontend_url_path=CAR_DASHBOARD_PATH,
+        config={"mode": MODE_STORAGE},
+        require_admin=False,
+        show_in_sidebar=False,
+    )
+
+
 async def async_ensure_dashboard(hass: HomeAssistant, entry: ConfigEntry) -> None:
     """Create a sidebar dashboard without overwriting user changes."""
     try:
@@ -357,6 +460,7 @@ async def async_ensure_dashboard(hass: HomeAssistant, entry: ConfigEntry) -> Non
 
         collection = lovelace_dashboard.DashboardsCollection(hass)
         await collection.async_load()
+        await _async_ensure_car_dashboard(hass, collection, cameras, buttons)
         existing = next(
             (
                 item

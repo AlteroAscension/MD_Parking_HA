@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.3
+
+- Move the vehicle display into a dedicated, app-owned `md-parking-car`
+  dashboard so it is always created and updated independently of user edits to
+  the regular MD Parking dashboard.
+- Keep the vehicle view full-width and out of the Home Assistant sidebar.
+
 ## 0.5.2
 
 - Render the vehicle dashboard as a full-width panel so its camera grid uses

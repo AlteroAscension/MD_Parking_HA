@@ -41,7 +41,7 @@ The integration creates a sidebar dashboard with connectivity state and a
 camera/button block for each gate. Closed cards use cached JPEG previews;
 opened cards use Home Assistant's native stream path at full frame rate.
 
-The same dashboard has a dedicated `/md-parking/car` view for landscape vehicle
+The integration also creates a dedicated `/md-parking-car/car` dashboard for landscape vehicle
 displays: two camera columns with each confirmed barrier control directly below
 its camera.
 
