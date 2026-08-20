@@ -132,6 +132,7 @@ def _dashboard_config(
     camera_names: dict[str, str] | None = None,
     button_factory=_button_card,
     include_car_view: bool = True,
+    car_panel: bool = True,
 ) -> dict:
     button_by_digest = {
         digest: entity_id
@@ -225,6 +226,7 @@ def _dashboard_config(
                 "title": "Авто",
                 "path": "car",
                 "icon": "mdi:car",
+                "panel": car_panel,
                 "cards": [
                     {
                         "type": "grid",
@@ -338,6 +340,14 @@ async def async_ensure_dashboard(hass: HomeAssistant, entry: ConfigEntry) -> Non
             camera_names,
             include_car_view=False,
         )
+        release_051 = _dashboard_config(
+            cameras,
+            buttons,
+            status_ids,
+            recorder_host,
+            camera_names,
+            car_panel=False,
+        )
         release_042 = _dashboard_config(cameras, buttons, status_ids)
         early_040 = _dashboard_config(
             cameras, buttons, status_ids, button_factory=_legacy_button_card
@@ -362,7 +372,7 @@ async def async_ensure_dashboard(hass: HomeAssistant, entry: ConfigEntry) -> Non
             current = await config.async_load(False)
             if current == desired:
                 return
-            if current in (previous_release, release_042, early_040) or _is_legacy_generated(
+            if current in (release_051, previous_release, release_042, early_040) or _is_legacy_generated(
                 current, camera_ids, button_ids
             ):
                 await config.async_save(desired)

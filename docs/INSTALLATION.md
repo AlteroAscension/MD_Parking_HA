@@ -69,7 +69,8 @@ after checking disk use.
 
 The generated dashboard is migrated only while it still matches a layout made
 by an older release. Version 0.5.1 adds the vehicle view to an unedited 0.5.0
-layout. Once edited, it is left untouched.
+layout, and 0.5.2 expands its grid to a full-width panel. Once edited, it is
+left untouched.
 
 ## Reauthentication
 

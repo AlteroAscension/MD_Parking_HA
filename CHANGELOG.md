@@ -1,5 +1,12 @@
 # Changelog
 
+## 0.5.2
+
+- Render the vehicle dashboard as a full-width panel so its camera grid uses
+  the available landscape display area.
+- Migrate the generated 0.5.1 vehicle layout without changing edited
+  dashboards.
+
 ## 0.5.1
 
 - Add the `md-parking/car` dashboard view for a landscape vehicle display:
